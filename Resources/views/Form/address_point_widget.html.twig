@@ -1,0 +1,92 @@
+{% block dcs_address_component_address_point_widget %}
+    {% spaceless %}
+        {{ form_widget(form) }}
+
+        {% if view_method == 'manual' or view_method == 'chain' %}
+            <div id="{{ map_id }}" style="width:100%; height: 300px"></div>
+        {% endif %}
+
+        <script>
+            var dcs_address_point_input = document.getElementById('{{ form.point.vars.id }}');
+
+            function initialize() {
+                {% if view_method == 'manual' or view_method == 'chain' %}
+                    var dcs_address_map_options = {
+                        zoom: 4,
+                        center: new google.maps.LatLng({{ center.lat }}, {{ center.lng }})
+                    };
+                    var dcs_address_map = new google.maps.Map(document.getElementById('{{ map_id }}'), dcs_address_map_options);
+                    var dcs_address_marker = null;
+                    var dcs_address_place_marker = function(location) {
+                        if (dcs_address_marker != null) {
+                            dcs_address_marker.setMap(null);
+                        }
+                        dcs_address_marker = new google.maps.Marker({
+                            map: dcs_address_map,
+                        });
+                        dcs_address_marker.setPosition(location);
+                        dcs_address_marker.setVisible(true);
+                    }
+                    if (dcs_address_point_input.value != '') {
+                        var dcs_address_lat_lng = dcs_address_point_input.value.split(',');
+                        var dcs_address_init_location = new google.maps.LatLng(dcs_address_lat_lng[0], dcs_address_lat_lng[1]);
+                        dcs_address_map.setCenter(dcs_address_init_location);
+                        dcs_address_place_marker(dcs_address_init_location);
+                        dcs_address_map.setZoom(17);
+                    } else {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                dcs_address_init_location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                                dcs_address_map.setCenter(dcs_address_init_location);
+                                dcs_address_place_marker(dcs_address_init_location);
+                                dcs_address_map.setZoom(17);
+                                dcs_address_point_input.value = dcs_address_init_location.lat()+','+dcs_address_init_location.lng();
+                            });
+                        }
+                    }
+                {% endif %}
+
+                {% if view_method == 'autocomplete' or view_method == 'chain' %}
+                    var dcs_address_input_address = document.getElementById('{{ form._address.vars.id }}');
+                    var dcs_address_autocomplete = new google.maps.places.Autocomplete(dcs_address_input_address);
+
+                    google.maps.event.addListener(dcs_address_autocomplete, 'place_changed', function() {
+                        var dcs_address_place = dcs_address_autocomplete.getPlace();
+                        if (!dcs_address_place.geometry) {
+                            return;
+                        }
+                        dcs_address_point_input.value = dcs_address_place.geometry.location.lat()+','+dcs_address_place.geometry.location.lng();
+                        {% if view_method == 'chain' %}
+                            if (dcs_address_place.geometry.viewport) {
+                                dcs_address_map.fitBounds(dcs_address_place.geometry.viewport);
+                            } else {
+                                dcs_address_map.setCenter(dcs_address_place.geometry.location);
+                                dcs_address_map.setZoom(17);
+                            }
+                            dcs_address_place_marker(dcs_address_place.geometry.location);
+                        {% endif %}
+                    });
+                {% endif %}
+
+                {% if view_method == 'manual' or view_method == 'chain' %}
+                    google.maps.event.addListener(dcs_address_map, 'click', function(event) {
+                        dcs_address_place_marker(event.latLng);
+                        dcs_address_point_input.value = event.latLng.lat()+','+event.latLng.lng();
+                    });
+                {% endif %}
+            }
+
+            {% if load_js_api %}
+                function loadScript() {
+                    var script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize&key={{ api_key }}&language={{ locale_api }}{% if view_method == 'autocomplete' or view_method == 'chain' %}&libraries=places{% endif %}';
+                    document.body.appendChild(script);
+                }
+                window.onload = loadScript;
+            {% else %}
+                window.onload = initialize;
+            {% endif %}
+        </script>
+    {% endspaceless %}
+{% endblock dcs_address_component_address_point_widget %}

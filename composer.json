@@ -1,0 +1,25 @@
+{
+    "name": "damianociarla/address-component-point-extensions-geocoder-bundle",
+    "description": "This Bundle provides functionality for managing address in Symfony2 applications",
+    "type": "library",
+    "keywords": [
+        "symfony2","address","geocoding","field","form"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/damianociarla/DCSAddressComponentPointExtensionsGeocoderBundle",
+    "authors": [
+        {
+            "name": "Damiano Ciarla",
+            "email": "damiano.ciarla@gmail.com",
+            "homepage": "http://www.damianociarla.it/"
+        }
+    ],
+    "require": {
+        "damianociarla/address-component-point-bundle": "dev-master",
+        "willdurand/geocoder-bundle": "~3.1"
+    },
+    "autoload": {
+        "psr-0": { "DCS\\AddressComponent\\PointBundle": "" }
+    },
+    "target-dir": "DCS/AddressComponent/PointBundle"
+}
