@@ -19,7 +19,7 @@
         "willdurand/geocoder-bundle": "~3.1"
     },
     "autoload": {
-        "psr-0": { "DCS\\AddressComponent\\PointBundle": "" }
+        "psr-0": { "DCS\\AddressComponent\\PointExtensions\\GeocoderBundle": "" }
     },
-    "target-dir": "DCS/AddressComponent/PointBundle"
+    "target-dir": "DCS/AddressComponent/PointExtensions/GeocoderBundle"
 }
