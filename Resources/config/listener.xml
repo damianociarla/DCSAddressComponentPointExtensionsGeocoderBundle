@@ -6,11 +6,15 @@
 
     <parameters>
         <parameter key="dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_component_point_subscriber.class">DCS\AddressComponent\PointExtensions\GeocoderBundle\EventListener\DCSAddressComponentPointEventSubscriber</parameter>
+        <parameter key="dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_event_subscriber.class">DCS\AddressComponent\PointExtensions\GeocoderBundle\EventListener\DCSAddressEventSubscriber</parameter>
     </parameters>
 
     <services>
         <service id="dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_component_point_subscriber" class="%dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_component_point_subscriber.class%">
             <argument type="service" id="bazinga_geocoder.geocoder" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+        <service id="dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_event_subscriber" class="%dcs_address_component_point_extensions_geocoder.event_listener.dcs_address_event_subscriber.class%">
             <tag name="kernel.event_subscriber" />
         </service>
     </services>

@@ -66,6 +66,16 @@
                             dcs_address_place_marker(dcs_address_place.geometry.location);
                         {% endif %}
                     });
+                    google.maps.event.addDomListener(dcs_address_input_address, 'keydown', function(event) {
+                        if (event.which == 13) {
+                            if (event.preventDefault) {
+                                event.preventDefault();
+                            } else {
+                                event.cancelBubble = true;
+                                event.returnValue = false;
+                            }
+                        }
+                    });
                 {% endif %}
 
                 {% if view_method == 'manual' or view_method == 'chain' %}
